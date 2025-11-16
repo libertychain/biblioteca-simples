@@ -1,3 +1,13 @@
-# Ignora tudo exceto backend
-/*
-!/backend/
+# Ignora arquivos desnecessários, mas MANTÉM o que é ESSENCIAL
+node_modules/
+frontend/
+.git/
+.vscode/
+coverage/
+*.log
+.env
+.DS_Store
+**/.env
+**/node_modules/
+.e2e-tests/
+dist/

@@ -1,10 +1,11 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci --omit=dev"
-startCommand = "npm start"
-root = "backend"  # Railway entra na pasta backend
 
 [[services]]
 name = "biblioteca-api"
 port = 3000
 healthcheckPath = "/api/livros"
+
+[build.nixpacks]
+# Instrui o Railway a entrar na pasta backend antes do build
+workdir = "backend"
