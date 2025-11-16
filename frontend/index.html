@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Simples</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Biblioteca Simples</h1>
+        
+        <div class="form-container">
+            <h2>Adicionar Livro</h2>
+            <form id="livroForm">
+                <input type="text" id="titulo" placeholder="Título" required>
+                <input type="text" id="autor" placeholder="Autor" required>
+                <input type="number" id="ano" placeholder="Ano" required>
+                <button type="submit">Adicionar</button>
+            </form>
+        </div>
+
+        <div class="lista-container">
+            <h2>Lista de Livros</h2>
+            <div id="loading" class="loading">Carregando...</div>
+            <ul id="listaLivros" class="lista-livros"></ul>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

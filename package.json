@@ -1,0 +1,19 @@
+{
+  "name": "biblioteca-simples",
+  "version": "1.0.0",
+  "description": "Projeto completo de biblioteca com testes e CI/CD",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npx live-server --port=5500",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": ["biblioteca", "testes", "ci", "cd"],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

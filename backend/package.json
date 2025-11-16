@@ -1,0 +1,23 @@
+{
+  "name": "biblioteca-backend",
+  "version": "1.0.0",
+  "description": "Backend da Biblioteca Simples",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": ["biblioteca", "api", "nodejs"],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.4",
+    "supertest": "^6.3.3"
+  }
+}
