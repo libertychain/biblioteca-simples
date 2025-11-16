@@ -3,8 +3,6 @@ name: Biblioteca CI/CD Pipeline
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   test:
@@ -14,33 +12,16 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-
-    - name: Instalar dependências root
-      run: npm install
-
-    - name: Instalar dependências backend
+    - name: Testar backend
       run: |
         cd backend
-        npm install
-
-    - name: Instalar dependências frontend
-      run: |
-        cd frontend
-        npm install
-
-    - name: Executar testes backend
-      run: |
-        cd backend
+        npm ci
         npm test
 
-    - name: Executar testes frontend
+    - name: Testar frontend
       run: |
         cd frontend
+        npm ci
         npm test
 
   deploy:
@@ -56,4 +37,4 @@ jobs:
       uses: railwayapp/railway-deploy@v1
       with:
         railway_token: ${{ secrets.RAILWAY_TOKEN }}
-        service: 'biblioteca-backend'
+        service: ${{ secrets.RAILWAY_SERVICE_ID }}
