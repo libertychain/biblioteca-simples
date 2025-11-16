@@ -1,46 +1,30 @@
-name: CI/CD Pipeline
+name: CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout código
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-
-    - name: Testar backend
-      run: |
-        cd backend
-        npm ci
-        npm test
-
-    - name: Testar frontend
-      run: |
-        cd frontend
-        npm ci
-        npm test
+    - uses: actions/checkout@v4
+    - name: Test backend
+      run: cd backend && npm ci && npm test
+    - name: Test frontend
+      run: cd frontend && npm ci && npm test
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
     steps:
-    - name: Checkout código
-      uses: actions/checkout@v4
-
-    - name: Deploy para Railway
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Railway
       uses: railwayapp/railway-deploy@v1
       with:
         railway_token: ${{ secrets.RAILWAY_TOKEN }}
         service: ${{ secrets.RAILWAY_SERVICE_ID }}
+        # Forçar root directory
+        root_directory: "backend"

@@ -1,11 +1,16 @@
 [build]
+# Forçar provider Node.js explicitamente
 builder = "nixpacks"
+buildCommand = "cd backend && npm ci --omit=dev"
+startCommand = "cd backend && npm start"
+
+# Configuração específica do Nixpacks para Node
+[build.nixpacks.plan.node]
+setupCmd = "curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs"
+buildCmd = "cd backend && npm ci --omit=dev"
+startCmd = "cd backend && npm start"
 
 [[services]]
 name = "biblioteca-api"
 port = 3000
 healthcheckPath = "/api/livros"
-
-[build.nixpacks]
-# Instrui o Railway a entrar na pasta backend antes do build
-workdir = "backend"

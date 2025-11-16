@@ -1,13 +1,17 @@
-# Ignora arquivos desnecessários, mas MANTÉM o que é ESSENCIAL
-node_modules/
-frontend/
-.git/
-.vscode/
-coverage/
-*.log
-.env
-.DS_Store
-**/.env
-**/node_modules/
-.e2e-tests/
-dist/
+# REMOVA tudo que pode confundir o detector
+# Especialmente: deno.json, package.json na raiz, etc
+
+# Ignore tudo...
+/*
+
+# EXCETO backend
+!/backend/
+!/backend/**/*
+
+# MAS ignore node_modules dentro de backend
+/backend/node_modules/
+
+# E ignore arquivos de teste/desenvolvimento
+/backend/tests/
+/backend/**/*.test.js
+/backend/vitest.config.js
