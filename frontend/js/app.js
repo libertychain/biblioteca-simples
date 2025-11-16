@@ -1,17 +1,27 @@
+// Configuração da API
 const API_URL = 'http://localhost:3000/api/livros';
 
+// Classe da Aplicação (AGORA EXPORTADA)
 class BibliotecaApp {
   constructor() {
-    this.form = document.getElementById('livroForm');
-    this.lista = document.getElementById('listaLivros');
-    this.loading = document.getElementById('loading');
-    
-    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-    
-    this.carregarLivros();
+    // Verifica se estamos no ambiente de teste ou navegador
+    if (typeof document !== 'undefined') {
+      this.form = document.getElementById('livroForm');
+      this.lista = document.getElementById('listaLivros');
+      this.loading = document.getElementById('loading');
+      
+      if (this.form) {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+      }
+      
+      this.carregarLivros();
+    }
   }
 
   async carregarLivros() {
+    // Só executa se o DOM estiver disponível
+    if (!this.lista || !this.loading) return;
+
     try {
       this.mostrarLoading();
       const response = await fetch(API_URL);
@@ -19,13 +29,17 @@ class BibliotecaApp {
       this.renderizarLivros(livros);
     } catch (error) {
       console.error('Erro ao carregar livros:', error);
-      this.lista.innerHTML = '<li>Erro ao carregar livros</li>';
+      if (this.lista) {
+        this.lista.innerHTML = '<li>Erro ao carregar livros</li>';
+      }
     } finally {
       this.esconderLoading();
     }
   }
 
   renderizarLivros(livros) {
+    if (!this.lista) return;
+
     this.lista.innerHTML = '';
     
     livros.forEach(livro => {
@@ -40,7 +54,9 @@ class BibliotecaApp {
       `;
       
       const btnDeletar = li.querySelector('.btn-deletar');
-      btnDeletar.addEventListener('click', () => this.deletarLivro(livro.id));
+      if (btnDeletar) {
+        btnDeletar.addEventListener('click', () => this.deletarLivro(livro.id));
+      }
       
       this.lista.appendChild(li);
     });
@@ -68,7 +84,7 @@ class BibliotecaApp {
   }
 
   async deletarLivro(id) {
-    if (!confirm('Tem certeza que deseja deletar este livro?')) return;
+    if (typeof window !== 'undefined' && !window.confirm('Tem certeza que deseja deletar este livro?')) return;
     
     try {
       await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
@@ -79,15 +95,26 @@ class BibliotecaApp {
   }
 
   mostrarLoading() {
-    this.loading.classList.remove('hidden');
+    if (this.loading) {
+      this.loading.classList.remove('hidden');
+    }
   }
 
   esconderLoading() {
-    this.loading.classList.add('hidden');
+    if (this.loading) {
+      this.loading.classList.add('hidden');
+    }
   }
 }
 
-// Inicializar app quando DOM carregar
-document.addEventListener('DOMContentLoaded', () => {
-  new BibliotecaApp();
-});
+// Inicializar app apenas se estiver no navegador
+if (typeof window !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    new BibliotecaApp();
+  });
+}
+
+// EXPORTAR para os testes
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = BibliotecaApp;
+}

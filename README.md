@@ -14,9 +14,13 @@ Projeto web completo de uma biblioteca simples com testes automatizados e pipeli
 ## 📁 Estrutura
 
 biblioteca-simples/
+
 ├── backend/          # API REST
+
 ├── frontend/         # Interface web
+
 ├── .github/workflows # Config CI/CD
+
 └── README.md
 
 

@@ -2,49 +2,73 @@
  * @jest-environment jsdom
  */
 
-// Mock do fetch global
+// Mock do fetch global ANTES de tudo
 global.fetch = jest.fn();
 
-// Carregar o código da aplicação
-const fs = require('fs');
-const path = require('path');
+// HTML Mock para os testes
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div class="container">
+        <form id="livroForm">
+            <input type="text" id="titulo" value="Teste">
+            <input type="text" id="autor" value="Autor Teste">
+            <input type="number" id="ano" value="2024">
+        </form>
+        <ul id="listaLivros"></ul>
+        <div id="loading" class="hidden"></div>
+    </div>
+</body>
+</html>
+`;
 
-// Simular o DOM
-const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
+// Configurar DOM
 document.documentElement.innerHTML = html;
 
-// Carregar o app após o DOM estar pronto
-require('../js/app.js');
+// Importar a classe APÓS o DOM estar pronto
+const BibliotecaApp = require('../js/app.js');
 
 describe('BibliotecaApp - Frontend', () => {
   let app;
 
   beforeEach(() => {
-    // Resetar mocks
+    // Resetar mocks antes de cada teste
     fetch.mockClear();
     jest.clearAllMocks();
     
-    // Recarregar o DOM limpo
+    // Recriar DOM limpo
     document.documentElement.innerHTML = html;
     
-    // Mock de livros de exemplo
-    global.fetch.mockResolvedValueOnce({
-      json: async () => [
-        { id: 1, titulo: 'Livro Teste', autor: 'Autor Teste', ano: 2023 }
-      ]
+    // Mock de resposta padrão para fetch
+    global.fetch.mockResolvedValue({
+      json: async () => [],
+      ok: true
     });
     
-    // Inicializar app
+    // Instanciar a aplicação
     app = new BibliotecaApp();
   });
 
   it('deve inicializar corretamente', () => {
+    expect(app).toBeDefined();
     expect(app.form).toBeTruthy();
     expect(app.lista).toBeTruthy();
     expect(app.loading).toBeTruthy();
   });
 
   it('deve carregar livros ao iniciar', async () => {
+    // Mock específico para este teste
+    global.fetch.mockResolvedValueOnce({
+      json: async () => [
+        { id: 1, titulo: 'Livro Teste', autor: 'Autor Teste', ano: 2023 }
+      ],
+      ok: true
+    });
+
     await app.carregarLivros();
     
     expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/livros');
@@ -61,35 +85,40 @@ describe('BibliotecaApp - Frontend', () => {
     const itens = document.querySelectorAll('.livro-item');
     expect(itens.length).toBe(1);
     expect(itens[0].textContent).toContain('JavaScript Moderno');
+    expect(itens[0].textContent).toContain('Mario - 2023');
   });
 
   it('deve adicionar livro ao submeter formulário', async () => {
-    // Mock para POST e GET após criação
-    fetch.mockResolvedValueOnce({ ok: true });
-    fetch.mockResolvedValueOnce({
+    // Mock para POST
+    global.fetch.mockResolvedValueOnce({
+      json: async () => ({ ok: true }),
+      ok: true
+    });
+
+    // Mock para GET após criação
+    global.fetch.mockResolvedValueOnce({
       json: async () => [
         { id: 1, titulo: 'Novo Livro', autor: 'Novo Autor', ano: 2024 }
-      ]
+      ],
+      ok: true
     });
-    
-    // Preencher formulário
-    document.getElementById('titulo').value = 'Novo Livro';
-    document.getElementById('autor').value = 'Novo Autor';
-    document.getElementById('ano').value = '2024';
-    
-    // Submeter formulário
+
+    // Criar evento de submit
     const event = new Event('submit');
     event.preventDefault = jest.fn();
-    
+
+    // Executar ação
     await app.handleSubmit(event);
     
+    // Verificar se fetch foi chamado com dados corretos
     expect(fetch).toHaveBeenCalledWith(
       'http://localhost:3000/api/livros',
       expect.objectContaining({
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          titulo: 'Novo Livro',
-          autor: 'Novo Autor',
+          titulo: 'Teste',
+          autor: 'Autor Teste',
           ano: 2024
         })
       })

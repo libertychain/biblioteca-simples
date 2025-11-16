@@ -36,6 +36,21 @@ class Livro {
     livros.splice(index, 1);
     return true;
   }
+
+  // Método para resetar estado durante testes
+  static resetar() {
+    // Limpa o array mantendo a referência
+    livros.splice(0, livros.length);
+    
+    // Reseta o contador de ID
+    nextId = 1;
+    
+    // Recria dados iniciais
+    livros.push(
+      { id: nextId++, titulo: "O Senhor dos Anéis", autor: "J.R.R. Tolkien", ano: 1954 },
+      { id: nextId++, titulo: "1984", autor: "George Orwell", ano: 1949 }
+    );
+  }
 }
 
 module.exports = Livro;

@@ -4,15 +4,10 @@ import app from '../src/app';
 
 describe('Testes da API de Livros', () => {
   
-  // Limpa e reseta dados antes de cada teste
+  // Reseta o banco de dados em memória antes de cada teste
   beforeEach(() => {
-    // Reinicia o banco de dados em memória
     const Livro = require('../src/models/Livro');
-    // Resetando o estado (hack para testes)
-    const livros = Livro.listar();
-    livros.splice(0, livros.length);
-    Livro.criar({ titulo: "O Senhor dos Anéis", autor: "J.R.R. Tolkien", ano: 1954 });
-    Livro.criar({ titulo: "1984", autor: "George Orwell", ano: 1949 });
+    Livro.resetar(); // Garante estado limpo com IDs sempre 1 e 2
   });
 
   it('GET /api/livros - deve listar todos os livros', async () => {
@@ -21,6 +16,7 @@ describe('Testes da API de Livros', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(2);
     expect(response.body[0]).toHaveProperty('titulo');
+    expect(response.body[0].titulo).toBe('O Senhor dos Anéis');
   });
 
   it('GET /api/livros/:id - deve buscar livro por ID', async () => {
@@ -28,6 +24,7 @@ describe('Testes da API de Livros', () => {
     
     expect(response.status).toBe(200);
     expect(response.body.titulo).toBe('O Senhor dos Anéis');
+    expect(response.body.autor).toBe('J.R.R. Tolkien');
   });
 
   it('POST /api/livros - deve criar um novo livro', async () => {
@@ -43,11 +40,11 @@ describe('Testes da API de Livros', () => {
     
     expect(response.status).toBe(201);
     expect(response.body.titulo).toBe('Dom Quixote');
-    expect(response.body.id).toBeDefined();
+    expect(response.body.id).toBe(3); // ID 3 porque 1 e 2 já existem
   });
 
   it('PUT /api/livros/:id - deve atualizar um livro', async () => {
-    const dadosAtualizados = { titulo: '1984 - Edição Especial' };
+    const dadosAtualizados = { titulo: '1984 - Edição Especial', ano: 1949 };
     
     const response = await request(app)
       .put('/api/livros/2')
@@ -55,6 +52,7 @@ describe('Testes da API de Livros', () => {
     
     expect(response.status).toBe(200);
     expect(response.body.titulo).toBe('1984 - Edição Especial');
+    expect(response.body.autor).toBe('George Orwell');
   });
 
   it('DELETE /api/livros/:id - deve deletar um livro', async () => {
