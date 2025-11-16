@@ -9,7 +9,7 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": ["biblioteca", "api", "nodejs"],
+  "keywords": ["biblioteca", "api", "nodejs", "express"],
   "author": "Seu Nome",
   "license": "MIT",
   "dependencies": {
@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "vitest": "^1.0.4",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.2"
   }
 }
